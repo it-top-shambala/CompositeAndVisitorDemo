@@ -1,0 +1,73 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+AbstractExporter <--o AbstractComponent
+AbstractComponent <--o AbstractComponent
+abstract AbstractComponent {
+# name : string
+# body : string
+# components : AbstractComponent[]
+
+# AbstractComponent(name : string, body : string)
+
++ {abstract} Export(exporter : AbstractExporter) : void
+
++ AddChild(component : AbstractComponent) : void
++ GetChildren() : AbstractComponent[]
+
++ GetName() : string
++ GetBody() : string
+}
+
+AbstractComponent <|-- TextComponent
+class TextComponent {
++ TextComponent(name : string, body : string)
+
++ Export(exporter : AbstractExporter) : void
+}
+
+AbstractComponent <|-- PictureComponent
+class PictureComponent {
+- path : string
+
++ PictureComponent(name : string, body : string, path : string)
+
++ Export(exporter : AbstractExporter) : void
+
++ GetPath() : string
+}
+
+TextComponent <--o AbstractExporter
+PictureComponent <--o AbstractExporter
+interface AbstractExporter {
++ {abstract} ExportTextComponent(component : TextComponent) : void
++ {abstract} ExportPictureComponent(component : PictureComponent) : void
+}
+
+AbstractExporter <|.. ExportToXml
+class ExportToXml {
+- pathXml : string
+
++ ExportToXml(pathXml : string)
+
+- WriteToFile(msg : string) : void
+- CreateOpenTag(tag : string,nameAttribute : string, attribute : string) : string
+- CreateCloseTag(tag : string) : string
+
++ ExportTextComponent(component : TextComponent) : void
++ ExportPictureComponent(component : PictureComponent) : void
+}
+
+AbstractExporter <|.. ExportToTxt
+class ExportToTxt {
+- pathFile : string
+
++ ExportToTxt(pathFile : string)
+
+- WriteToFile(msg : string) : void
+
++ ExportTextComponent(component : TextComponent) : void
++ ExportPictureComponent(component : PictureComponent) : void
+}
+
+@enduml
